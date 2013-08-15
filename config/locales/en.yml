@@ -1,0 +1,10 @@
+en:
+  google_merchant:
+    export_settings: "Google Merchant Export Settings"
+    title: "Title"
+    public_domain: "Public Domain"
+    description: "Description"
+    ftp_username: "FTP user name"
+    ftp_password: "FTP password"
+    product_category: "Google Product Category"
+

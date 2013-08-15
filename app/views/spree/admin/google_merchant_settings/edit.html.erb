@@ -1,0 +1,18 @@
+<h1><%= t("google_merchant.export_settings") %></h1>
+
+<%= form_tag(admin_google_merchant_settings_path, :method => :put) do |f| %>
+  <% [:title, :public_domain, :description, :product_category, :ftp_username, :ftp_password].each do |setting| %>
+    <p><%= setting_field(setting) %></p>
+  <% end %>
+
+  <p class="form-buttons">
+    <%= button Spree.t('update') %>
+    <%= Spree.t("or") %> <%= link_to Spree.t("cancel"), admin_google_merchant_settings_url %>
+  </p>
+<% end %>
+
+<% content_for :head do %>
+  <style>
+    .edit_google_merchant_configuration input { width: 250px; }
+  </style>
+<% end %>
