@@ -89,11 +89,11 @@ module SpreeGoogleMerchant
       return false if product.google_merchant_product_category.nil?
       return false if product.google_merchant_availability.nil?
       return false if product.google_merchant_price.nil?
-      return false if product.google_merchant_description.nil?
+      #return false if product.google_merchant_description.nil?
       return false if product.google_merchant_brand.nil?
       return false if product.google_merchant_gtin.nil?
       return false if product.google_merchant_mpn.nil?
-      return false if product.google_merchant_shipping_weight.nil?
+      #return false if product.google_merchant_shipping_weight.nil?
 
       unless product.google_merchant_sale_price.nil?
         return false if product.google_merchant_sale_price_effective.nil?
@@ -166,9 +166,14 @@ module SpreeGoogleMerchant
 
     # <g:adwords_labels>
     def build_adwords_labels(xml, product)
-      return if product.property(:gm_adwords_label).nil?
 
-      labels = self.property(:gm_adwords_label).to_a
+      labels = []
+      list = [:category,:group,:type,:theme,:color,:shape,:brand,:size,:material,:for,:agegroup,:keyword]
+      list.each do |prop|
+        value = product.property(prop)
+        labels << value if value.present?
+      end
+
       labels.each do |l|
         xml.tag!('g:adwords_labels', l)
       end
