@@ -79,12 +79,16 @@ module Spree
 
     # <g:gender> Male, Female, Unisex
     def google_merchant_gender
-      self.property(:gender).gsub('Girls','Female').gsub('Womens','Female').gsub('Boys','Male').gsub('Mens','Male')
+      value = self.property(:gender)
+      return unless value.present?
+      value.gsub('Girls','Female').gsub('Womens','Female').gsub('Boys','Male').gsub('Mens','Male')
     end
 
     # <g:age_group> Adult, Kids
     def google_merchant_age_group
-      self.property(:agegroup).gsub('Adults','Adult')
+      value = self.property(:agegroup)
+      return unless value.present?
+      value.gsub('Adults','Adult')
     end
 
     # <g:color>
@@ -104,7 +108,7 @@ module Spree
 
     # <g:shipping_weight> # lb, oz, g, kg.
     def google_merchant_shipping_weight
-      return if self.weight * 1 == 0
+      return unless self.weight.present?
       weight_units = 'oz'       # need a configuration parameter here
       format("%s %s", self.weight, weight_units)
     end
