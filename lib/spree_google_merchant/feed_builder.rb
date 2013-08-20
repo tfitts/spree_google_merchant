@@ -180,17 +180,22 @@ module SpreeGoogleMerchant
     def build_adwords_labels(xml, product)
 
       labels = []
-      list = [:category,:group,:type,:theme,:color,:shape,:brand,:size,:material,:for,:agegroup,:keyword]
-      list.each do |prop|
-        value = product.property(prop)
-        labels << value if value.present?
-      end
 
       product.taxons.first.self_and_ancestors.each do |taxon|
         labels << taxon.name
       end
 
-      labels.each do |l|
+      list = [:category,:group,:type,:theme,:keyword,:color,:shape,:brand,:size,:material,:for,:agegroup]
+      list.each do |prop|
+        if labels.length < 10 then
+          value = product.property(prop)
+          labels << value if value.present?
+        end
+      end
+
+
+
+      labels.slice(0..9).each do |l|
         xml.tag!('g:adwords_labels', l)
       end
     end
