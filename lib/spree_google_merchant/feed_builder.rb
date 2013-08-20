@@ -186,7 +186,7 @@ module SpreeGoogleMerchant
         labels << value if value.present?
       end
 
-      self.taxons.first.self_and_ancestors.each do |taxon|
+      product.taxons.first.self_and_ancestors.each do |taxon|
         labels << taxon.name
       end
 
