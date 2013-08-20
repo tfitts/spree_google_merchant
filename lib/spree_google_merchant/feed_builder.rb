@@ -94,6 +94,7 @@ module SpreeGoogleMerchant
       return false if product.google_merchant_gtin.nil?
       return false if product.google_merchant_mpn.nil?
       #return false if product.google_merchant_shipping_weight.nil?
+      return false unless validate_upc(product.upc)
 
       unless product.google_merchant_sale_price.nil?
         return false if product.google_merchant_sale_price_effective.nil?
@@ -162,6 +163,17 @@ module SpreeGoogleMerchant
       base_url = "#{domain}/#{base_url}" unless Spree::Config[:use_s3]
 
       base_url
+    end
+
+    def validate_upc(upc)
+      digits = upc.split('')
+      len = upc.length
+      return false unless [8,12,13,14].include? len
+      check = 0
+      digits.reverse.drop(1).reverse.each_with_index do |i,index|
+        check += (index.to_i % 2 == len % 2 ? i.to_i * 3 : i.to_i )
+      end
+      ((10 - check % 10) % 10) == digits.last.to_i
     end
 
     # <g:adwords_labels>
