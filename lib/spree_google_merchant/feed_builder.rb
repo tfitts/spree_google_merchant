@@ -144,6 +144,7 @@ module SpreeGoogleMerchant
           xml.tag!(k, value.to_s) if value.present?
         end
         build_adwords_labels(xml, product)
+        build_custom_labels(xml, product)
       end
     end
 
@@ -181,8 +182,11 @@ module SpreeGoogleMerchant
 
       labels = []
 
-      product.taxons.first.self_and_ancestors.each do |taxon|
-        labels << taxon.name
+      taxon = product.taxons.first
+      unless taxon.nil?
+        taxon.self_and_ancestors.each do |taxon|
+          labels << taxon.name
+        end
       end
 
       list = [:category,:group,:type,:theme,:keyword,:color,:shape,:brand,:size,:material,:for,:agegroup]
@@ -198,6 +202,10 @@ module SpreeGoogleMerchant
       labels.slice(0..9).each do |l|
         xml.tag!('g:adwords_labels', l)
       end
+    end
+
+    def build_custom_labels(xml, product)
+      xml.tag!('g:custom_label_0', product.google_merchant_availability)
     end
 
     def build_meta(xml)
