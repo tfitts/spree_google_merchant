@@ -13,4 +13,27 @@ namespace :spree_google_merchant do
     SpreeGoogleMerchant::FeedBuilder.transfer
   end
 
+  task :generate_and_transfer_shipments => [:environment] do |t, args|
+    SpreeGoogleMerchant::ShippingFeedBuilder.generate_and_transfer
+  end
+
+  task :generate_shipments => [:environment] do |t, args|
+    SpreeGoogleMerchant::ShippingFeedBuilder.generate
+  end
+
+  task :transfer_shipments => [:environment] do |t, args|
+    SpreeGoogleMerchant::ShippingFeedBuilder.transfer
+  end
+
+  task :generate_and_transfer_cancellations => [:environment] do |t, args|
+    SpreeGoogleMerchant::CancellationFeedBuilder.generate_and_transfer
+  end
+
+  task :generate_cancellations => [:environment] do |t, args|
+    SpreeGoogleMerchant::CancellationFeedBuilder.generate
+  end
+
+  task :transfer_cancellations => [:environment] do |t, args|
+    SpreeGoogleMerchant::CancellationFeedBuilder.transfer
+  end
 end
