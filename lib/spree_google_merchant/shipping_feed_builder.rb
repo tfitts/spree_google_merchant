@@ -12,22 +12,7 @@ module SpreeGoogleMerchant
 
       ar_scope.find_each(:batch_size => 300) do |shipment|
         next unless validate_record(shipment)
-        file.write("#{shipment.order.number}\t#{shipment.tracking}\t#{carrier_code_from_tracking(shipment.tracking)}\t\t#{shipment.shipped_at.utc.strftime('%FT%T')}\n")
-      end
-    end
-
-    def carrier_code_from_tracking tracking
-      ups = /1Z[0-9A-Z]+/
-      usps = /92\d+/
-      mail_innovations = /94\d+/
-      if ups =~ tracking
-        "UPS"
-      elsif usps =~ tracking
-        "USPS"
-      elsif mail_innovations =~ tracking
-        "USPS"
-      else
-        ""
+        file.write("#{shipment.order.number}\t#{shipment.tracking}\t#{shipment.carrier_code}\t\t#{shipment.shipped_at.utc.strftime('%FT%T')}\n")
       end
     end
 
