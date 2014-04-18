@@ -201,6 +201,9 @@ module Spree
 
     def amazon_item_package_quantity
       count = self.property(:count)
+      if count.kind_of?(Array)
+        count = count[0]
+      end
       if count.nil?
         1
       else
