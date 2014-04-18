@@ -1,10 +1,11 @@
 <h1><%= t("google_merchant.export_settings") %></h1>
 
 <table>
-  <% [:title, :public_domain, :description, :product_category, :ftp_username].each do |setting| %>
+  <% [:title, :public_domain, :description, :product_category, :ftp_username, :amazon_sftp_username].each do |setting| %>
     <%= setting_presentation_row(setting) %>
   <% end %>
   <%= setting_presentation_row(:ftp_password, true) %>
+  <%= setting_presentation_row(:amazon_sftp_password, true) %>
 </table>
 
 <p>

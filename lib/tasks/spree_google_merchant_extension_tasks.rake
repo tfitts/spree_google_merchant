@@ -36,4 +36,16 @@ namespace :spree_google_merchant do
   task :transfer_cancellations => [:environment] do |t, args|
     SpreeGoogleMerchant::CancellationFeedBuilder.transfer
   end
+
+  task :generate_and_transfer_amazon => [:environment] do |t, args|
+    SpreeGoogleMerchant::AmazonFeedBuilder.generate_and_transfer
+  end
+
+  task :generate_amazon => [:environment] do |t, args|
+    SpreeGoogleMerchant::AmazonFeedBuilder.generate
+  end
+
+  task :transfer_amazon => [:environment] do |t, args|
+    SpreeGoogleMerchant::AmazonFeedBuilder.transfer
+  end
 end

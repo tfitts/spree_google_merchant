@@ -1,6 +1,7 @@
 module Spree
   Product.class_eval do
-    scope :google_merchant_scope, includes(:taxons, {:master => :images})
+    scope :google_merchant_scope, includes(:taxons, {:master => :images}).includes(:product_properties)
+    scope :amazon_ads, joins(:product_properties => :property).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus')").where("imagesize >= 500").includes(:taxons, {:master => :images}).includes(:product_properties).group(:id)
 
     def google_merchant_description
       self.description
@@ -118,5 +119,117 @@ module Spree
       self.property(:gm_adult) unless self.property(:gm_adult).nil?
     end
 
+    ## Amazon Listing Methods
+    def amazon_category
+      self.property(:category)
+    end
+
+    def amazon_title
+      self.property(:name)
+    end
+
+    def amazon_link
+      self.url
+    end
+
+    def amazon_sku
+      self.sku
+    end
+
+    def amazon_price
+      self.price.to_s
+    end
+
+    def amazon_image
+      self.max_image_url
+    end
+
+    def amazon_upc
+      self.upc
+    end
+
+    def amazon_brand
+      self.property(:brand)
+    end
+
+    def amazon_recommended_browse_node
+      # case self.property(:group)
+      # when "Costumes"
+      #   case self.property(:gender)
+      #   when "Boys"
+
+      #   when "Girls"
+
+      #   when "Men"
+
+      #   when "Women"
+          
+      # if self.property(:group) == "Costumes"
+      #   if self.property(:gender) == "Boys"
+      #     727631011
+      #   elsif self.property(:gender) == "Girls"
+      #     727632011
+      #   elsif self.property(:gender) == ""
+          
+      # elsif 
+
+      # elsif 
+
+      # elsif 
+      ""        
+    end
+
+    def amazon_department
+      self.property(:category)
+    end
+
+    def amazon_description
+      self.description
+    end
+
+    def amazon_manufacturer
+      ""
+    end
+
+    def amazon_mfr_part_number
+      ""
+    end
+
+    def amazon_shipping_cost
+      ""
+    end
+
+    def amazon_item_package_quantity
+      count = self.property(:count)
+      if count.nil?
+        1
+      else
+        Integer(count)
+      end
+    end
+
+    def amazon_size
+      self.property(:size)
+    end
+
+    def amazon_color
+      self.property(:color)
+    end
+
+    def amazon_gender
+      self.property(:gender)
+    end
+
+    def amazon_material
+      self.property(:material)
+    end
+
+    def amazon_occasion
+      if self.taxons.present? && self.taxons.first.present? && self.taxons.first.name.present?
+        self.taxons.first.name
+      else
+        ""
+      end      
+    end
   end
 end

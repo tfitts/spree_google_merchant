@@ -1,7 +1,7 @@
 <h1><%= t("google_merchant.export_settings") %></h1>
 
 <%= form_tag(admin_google_merchant_settings_path, :method => :put) do |f| %>
-  <% [:title, :public_domain, :description, :product_category, :ftp_username, :ftp_password].each do |setting| %>
+  <% [:title, :public_domain, :description, :product_category, :ftp_username, :ftp_password, :amazon_sftp_username, :amazon_sftp_password].each do |setting| %>
     <p><%= setting_field(setting) %></p>
   <% end %>
 

@@ -7,4 +7,6 @@ en:
     ftp_username: "FTP user name"
     ftp_password: "FTP password"
     product_category: "Google Product Category"
+    amazon_sftp_username: "Amazon SFTP Username"
+    amazon_sftp_password: "Amazon SFTP Password"
 

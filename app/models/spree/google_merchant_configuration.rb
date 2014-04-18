@@ -10,5 +10,9 @@ module Spree
     # Omit trailing slash when setting
     #
     preference :public_domain, :string
+
+    # Amazon product ads preferences
+    preference :amazon_sftp_username, :text, :default => ''
+    preference :amazon_sftp_password, :password, :default => ''
   end
 end
