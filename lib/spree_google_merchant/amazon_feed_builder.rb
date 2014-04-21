@@ -43,18 +43,32 @@ module SpreeGoogleMerchant
       file.write("\n");
 
       # Write row for each product
+      index = 0
+      start_time = Time.now
       ar_scope.find_each(:batch_size => 300) do |product|
         next unless validate_record(product)
+        line = ""
         @@feed_attributes.each_with_index do |attr_name, index|
           method = "amazon_#{attr_name.downcase.tr(' ', '_')}"
           value = product.send(method)
           if index == 0
-            file.write("#{value}")
+            line << "#{value}"
           else
-            file.write("\t#{value}")
+            line << "\t#{value}"
           end
         end
-        file.write("\n")
+        file.write("#{line}\n")
+        
+        # Log progress to console
+        if(index % 20 == 0)
+          percent = (((index.to_f + 1) / (@product_count.to_f + 1)) * 100).to_i
+          current_time = Time.now
+          elapsed_seconds = current_time - start_time
+          rate = index/elapsed_seconds
+          print "#{percent}% (#{index}/#{@product_count}) (#{rate}/sec)   \r"
+        end
+        
+        index += 1
       end
     end
 
@@ -69,11 +83,23 @@ module SpreeGoogleMerchant
 
     def ar_scope
       if @store
-        Spree::Product.by_store(@store).amazon_ads.scoped
+        products = Spree::Product.by_store(@store).amazon_ads.scoped
       else
-        Spree::Product.amazon_ads.scoped
+        products = Spree::Product.amazon_ads.scoped
       end
+      @product_count = products.length
+      products
     end
 
+    def validate_record(product)
+      return false if product.images.length == 0 && product.imagesize == 0 rescue true
+      return false if product.amazon_title.nil?
+      return false if product.amazon_category.nil?
+      return false if product.amazon_price.nil? || product.amazon_price.to_f <= 0
+      return false if product.amazon_link.nil?
+      return false if product.amazon_sku.nil?
+      return false unless validate_upc(product.upc)
+      true
+    end
   end
 end

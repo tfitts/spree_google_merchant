@@ -125,7 +125,7 @@ module Spree
     end
 
     def amazon_title
-      self.property(:name)
+      self.name
     end
 
     def amazon_link
