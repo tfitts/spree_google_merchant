@@ -167,6 +167,7 @@ module SpreeGoogleMerchant
     end
 
     def validate_upc(upc)
+      return false if upc.nil?
       digits = upc.split('')
       len = upc.length
       return false unless [8,12,13,14].include? len
