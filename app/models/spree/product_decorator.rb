@@ -1,7 +1,7 @@
 module Spree
   Product.class_eval do
     scope :google_merchant_scope, includes(:taxons, {:master => :images}).includes(:product_properties)
-    scope :amazon_ads, joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("imagesize >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)
+    scope :amazon_ads, joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus')").where("imagesize >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)
 
     def google_merchant_description
       self.description
@@ -233,6 +233,14 @@ module Spree
       else
         ""
       end      
+    end
+
+    def amazon_sku_bid
+      if self.master.stock_items.first.count_on_hand <= 0
+        0.0
+      else
+        ""
+      end
     end
   end
 end
