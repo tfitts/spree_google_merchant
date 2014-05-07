@@ -36,9 +36,7 @@ module Spree
     end
 
     def google_merchant_image_link
-      image = images.first and
-          image_path = image.attachment.url(:product) and
-          [Spree::GoogleMerchant::Config[:public_domain], image_path].join
+      self.max_image_url
     end
 
     def google_merchant_brand
