@@ -28,11 +28,11 @@ module Spree
 
     # <g:availability> in stock | available for order | out of stock | preorder
     def google_merchant_availability
-      self.master.stock_items.first.count_on_hand > 0 ? 'in stock' : 'out of stock'
+      self.master.stock_items.sum(:count_on_hand) > 0 ? 'in stock' : 'out of stock'
     end
 
     def google_merchant_quantity
-      self.master.stock_items.first.count_on_hand
+      self.master.stock_items.sum(:count_on_hand)
     end
 
     def google_merchant_image_link
