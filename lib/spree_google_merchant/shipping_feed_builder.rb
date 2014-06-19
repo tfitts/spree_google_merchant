@@ -26,7 +26,6 @@ module SpreeGoogleMerchant
 
     def validate_record(shipment)
       return false if shipment.order.nil? || shipment.order.number.nil?
-      return false if shipment.tracking.nil? || shipment.tracking == ""
       return false if shipment.shipped_at.nil?
       true
     end
