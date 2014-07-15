@@ -143,6 +143,7 @@ module SpreeGoogleMerchant
           value = product.send("google_merchant_#{v}")
           xml.tag!(k, value.to_s) if value.present?
         end
+        build_shipping(xml, product)
         build_adwords_labels(xml, product)
         build_custom_labels(xml, product)
       end
@@ -176,6 +177,16 @@ module SpreeGoogleMerchant
         check += (index.to_i % 2 == len % 2 ? i.to_i * 3 : i.to_i )
       end
       ((10 - check % 10) % 10) == digits.last.to_i
+    end
+
+    # <g:shipping>
+    def build_shipping(xml, product)
+      if !product.master.fulfillment_cost.nil?
+        xml.tag!('g:shipping') do
+          xml.tag!('g:country', "US")
+          xml.tag!('g:price', product.master.fulfillment_cost.to_f)
+        end
+      end
     end
 
     # <g:adwords_labels>
