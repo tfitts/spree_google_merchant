@@ -1,0 +1,1 @@
+//= require admin/typeahead/typeahead.bundle

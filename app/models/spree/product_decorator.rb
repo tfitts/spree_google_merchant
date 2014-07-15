@@ -3,6 +3,8 @@ module Spree
     scope :google_merchant_scope, includes(:taxons, {:master => :images}).includes(:product_properties)
     scope :amazon_ads, joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("imagesize >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)
 
+    attr_accessible :google_product_category
+
     def google_merchant_description
       self.description
     end

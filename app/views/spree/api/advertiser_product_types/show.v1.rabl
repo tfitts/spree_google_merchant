@@ -1,0 +1,2 @@
+collection @product_types
+attributes :product_type

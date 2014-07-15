@@ -48,4 +48,13 @@ namespace :spree_google_merchant do
   task :transfer_amazon => [:environment] do |t, args|
     SpreeGoogleMerchant::AmazonFeedBuilder.transfer
   end
+
+  task :import_advertiser_product_types, [:advertiser, :file] => [:environment] do |t, args|
+    if File.exist?(args[:file]) 
+      file = File.open(args[:file], "r")
+      SpreeGoogleMerchant::AdvertiserProductTypesImporter.import_plain_text_list(args[:advertiser], file)
+    else
+      puts "Provided file doesn't exist"
+    end
+  end
 end

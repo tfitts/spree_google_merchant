@@ -1,0 +1,53 @@
+<!-- Override spree_google_merchant:decorate_taxon_edit -->
+<style>
+.twitter-typeahead {
+  width: 100%;
+}
+.tt-dropdown-menu {
+  background: white;
+}
+</style>
+<div class="twelve columns alpha omega">
+  <%= f.field_container :google_product_category do %>
+    <%= f.label :google_product_category, Spree.t(:google_product_category) %><br />
+    <%= f.text_field :google_product_category, :class => 'fullwidth', :id => 'google_product_category', :rows => 6 %>
+  <% end %>
+</div>
+<script>
+$(function(){
+  var categories = new Bloodhound({
+    datumTokenizer: function(datum){
+      return Bloodhound.tokenizers.whitespace(datum);
+    },
+    queryTokenizer: function(query){
+      return query;
+    },
+    prefetch: '/api/advertiser_product_types',
+    remote: {
+      url: '/api/advertiser_product_types?part=%QUERY',
+      filter: function(parsedResponse){
+        var datums = [];
+        $.each(parsedResponse, function(index, string){
+          datums.push({
+            value: string
+          });
+        })
+        return datums;
+      }
+    },
+    limit: 30
+  })
+
+  categories.initialize();
+
+  $('#google_product_category').typeahead({
+    highlight: true,
+
+  }, {
+    name: 'google-product-categories',
+    displayKey: 'value',
+    source: categories.ttAdapter()
+  });
+});
+</script>
+<!-- End Override -->
