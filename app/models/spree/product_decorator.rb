@@ -194,7 +194,11 @@ module Spree
     end
 
     def amazon_shipping_cost
-      ""
+      if !master.fulfillment_cost.nil? && master.fulfillment_cost > 0
+        master.fulfillment_cost.to_f
+      else
+        ""
+      end
     end
 
     def amazon_item_package_quantity
