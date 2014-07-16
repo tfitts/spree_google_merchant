@@ -181,9 +181,10 @@ module SpreeGoogleMerchant
 
     # <g:shipping>
     def build_shipping(xml, product)
-      if !product.master.fulfillment_cost.nil?
+      if !product.master.fulfillment_cost.nil? && product.master.fulfillment_cost > 0
         xml.tag!('g:shipping') do
           xml.tag!('g:country', "US")
+          xml.tag!('g:service', "Ground")
           xml.tag!('g:price', product.master.fulfillment_cost.to_f)
         end
       end
