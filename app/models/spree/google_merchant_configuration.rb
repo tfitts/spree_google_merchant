@@ -18,5 +18,9 @@ module Spree
     # eBay product ads preferences
     preference :ebay_ftp_username, :text, :default => ''
     preference :ebay_ftp_password, :password, :default => ''
+
+    # Bing product ads preferences
+    preference :bing_sftp_username, :string, :default => ''
+    preference :bing_sftp_password, :password, :default => ''
   end
 end

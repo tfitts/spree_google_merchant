@@ -60,4 +60,16 @@ namespace :spree_google_merchant do
   task :transfer_ebay => [:environment] do |t, args|
     SpreeGoogleMerchant::EbayFeedBuilder.transfer
   end
+
+  task :generate_and_transfer_bing => [:environment] do |t, args|
+    SpreeGoogleMerchant::BingFeedBuilder.generate_and_transfer
+  end
+
+  task :generate_bing => [:environment] do |t, args|
+    SpreeGoogleMerchant::BingFeedBuilder.generate
+  end
+
+  task :transfer_bing => [:environment] do |t, args|
+    SpreeGoogleMerchant::BingFeedBuilder.transfer
+  end
 end

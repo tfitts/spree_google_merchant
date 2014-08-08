@@ -323,5 +323,57 @@ module Spree
       end
       types.join(' > ')
     end
+
+    def bing_mpid
+      self.id
+    end
+
+    def bing_title
+      self.name
+    end
+
+    def bing_brand
+      self.property(:brand)
+    end
+
+    def bing_producturl
+      self.url
+    end
+
+    def bing_price
+      self.price.to_s
+    end
+
+    def bing_description
+      self.description
+    end
+
+    def bing_imageurl
+      ebay_image_url
+    end
+
+    def bing_upc
+      self.upc
+    end
+
+    def bing_sku
+      self.sku
+    end
+
+    def bing_shipping
+      ebay_shipping_rate
+    end
+
+    def bing_condition
+      "New"
+    end
+
+    def bing_producttype
+      ebay_category
+    end
+
+    def bing_availability
+      ebay_stock_availability
+    end
   end
 end

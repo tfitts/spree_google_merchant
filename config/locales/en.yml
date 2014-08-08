@@ -9,4 +9,8 @@ en:
     product_category: "Google Product Category"
     amazon_sftp_username: "Amazon SFTP Username"
     amazon_sftp_password: "Amazon SFTP Password"
+    ebay_ftp_username: "eBay Commerce Network FTP Username"
+    ebay_ftp_password: "eBay Commerce Network FTP Password"
+    bing_sftp_username: "Bing Ads SFTP Username"
+    bing_sftp_password: "Bing Ads SFTP Password"
 
