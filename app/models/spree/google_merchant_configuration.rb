@@ -14,5 +14,9 @@ module Spree
     # Amazon product ads preferences
     preference :amazon_sftp_username, :text, :default => ''
     preference :amazon_sftp_password, :password, :default => ''
+
+    # eBay product ads preferences
+    preference :ebay_ftp_username, :text, :default => ''
+    preference :ebay_ftp_password, :password, :default => ''
   end
 end

@@ -2,6 +2,7 @@ module Spree
   Product.class_eval do
     scope :google_merchant_scope, includes(:taxons, {:master => :images}).includes(:product_properties)
     scope :amazon_ads, joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("imagesize >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)
+    scope :ebay_ads, joins([{:product_properties => :property}, {:master => :stock_items}]).where("spree_stock_items.count_on_hand <> 0").where("imagesize >= 300").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)
 
     def google_merchant_description
       self.description
@@ -244,6 +245,83 @@ module Spree
       #   ""
       # end
       ""
+    end
+
+    def ebay_unique_merchant_sku
+      self.id
+    end
+
+    def ebay_product_name
+      self.name
+    end
+
+    def ebay_product_url
+      self.url
+    end
+
+    def ebay_image_url
+      self.max_image_url
+    end
+
+    def ebay_current_price
+      self.price.to_s
+    end
+
+    def ebay_stock_availability
+      self.master.stock_items.sum(:count_on_hand) > 0 ? 'In Stock' : 'Out of Stock'
+    end
+
+    def ebay_condition
+      "New"
+    end
+
+    def ebay_upc
+      self.upc
+    end
+
+    def ebay_shipping_rate
+      self.master.fulfillment_cost
+    end
+
+    def ebay_original_price
+      self.msrp
+    end
+
+    def ebay_brand
+      self.property(:brand)
+    end
+
+    def ebay_product_description
+      self.description
+    end
+
+    def ebay_product_type
+      type = ""
+      if self.property(:type)
+        type = self.property(:type)
+      elsif self.property(:group)
+        type = self.property(:group)
+      elsif self.property(:category)
+        type = self.property(:category)
+      end
+      if type.kind_of?(Array)
+        type = type[0].to_s
+      end
+      type
+    end
+
+    def ebay_category
+      types = []
+      if self.property(:category)
+        types << self.property(:category)
+      end
+      if self.property(:group)
+        types << self.property(:group)
+      end
+      if self.property(:type)
+        types << self.property(:type)
+      end
+      types.join(' > ')
     end
   end
 end
