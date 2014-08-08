@@ -66,12 +66,14 @@ module SpreeGoogleMerchant
     end
 
     def transfer_xml
-      raise "Please configure your Google Merchant :ftp_username and :ftp_password by configuring Spree::GoogleMerchant::Config" unless
+      raise "Please configure your Google Merchant :ebay_ftp_username and :ebay_ftp_password by configuring Spree::GoogleMerchant::Config" unless
           Spree::GoogleMerchant::Config[:bing_sftp_username] and Spree::GoogleMerchant::Config[:bing_sftp_password]
 
-      Net::SFTP.start('feeds.adcenter.microsoft.com', Spree::GoogleMerchant::Config[:bing_sftp_username], :password => Spree::GoogleMerchant::Config[:bing_sftp_password]) do |sftp|
-        sftp.upload(path, filename)
-      end
+      ftp = Net::FTP.new('feeds.adcenter.microsoft.com')
+      ftp.passive = true
+      ftp.login(Spree::GoogleMerchant::Config[:bing_sftp_username], Spree::GoogleMerchant::Config[:bing_sftp_password])
+      ftp.put(path, filename)
+      ftp.quit
     end
 
     def ar_scope
