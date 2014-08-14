@@ -256,7 +256,7 @@ module Spree
     end
 
     def ebay_product_url
-      self.url
+      "#{self.url}?utm_source=ebaycn&utm_medium=cpc&utm_campaign=ebay-product-ads"
     end
 
     def ebay_image_url
@@ -337,7 +337,7 @@ module Spree
     end
 
     def bing_producturl
-      self.url
+      "#{self.url}?utm_source=bing&utm_medium=cpc&utm_campaign=bing-product-ads"
     end
 
     def bing_price
