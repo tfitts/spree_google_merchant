@@ -13,4 +13,9 @@ en:
     ebay_ftp_password: "eBay Commerce Network FTP Password"
     bing_sftp_username: "Bing Ads SFTP Username"
     bing_sftp_password: "Bing Ads SFTP Password"
+  spree:
+    new_product_ad: "New Product Ad"
+    channel: Channel
+    max_cpc: Max CPC
+    product_ad: "Product Ad"
 
