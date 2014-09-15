@@ -14,8 +14,19 @@ en:
     bing_sftp_username: "Bing Ads SFTP Username"
     bing_sftp_password: "Bing Ads SFTP Password"
   spree:
-    new_product_ad: "New Product Ad"
+    product_ad: Product Ad
+    new_product_ad: New Product Ad
     channel: Channel
     max_cpc: Max CPC
-    product_ad: "Product Ad"
+    variant_product_ads: Variant Product Ads
+    product_ad_channels: Product Ad Channels
+    new_product_ad_channel: New Product Ad Channel
+  activerecord:
+    models:
+      spree/product_ad:
+        one: Product Ad
+        other: Product Ads
+      spree/product_ad_channel:
+        one: Product Ad Channel
+        other: Product Ad Channels
 

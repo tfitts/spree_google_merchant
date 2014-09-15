@@ -1,6 +1,6 @@
 module Spree
   module Admin
-    class ProductAdsController < Admin::BaseController
+    class ProductAdsController < ResourceController
       before_filter :load_product
       before_filter :load_channel
 
@@ -20,7 +20,7 @@ module Spree
 
       def load_channel
         unless params[:product_ads_channel_id].nil?
-          @channel = Spree::ProductAdsChannel.find(params[:product_ads_channel_id])
+          @channel = Spree::ProductAdChannel.find(params[:product_ad_channel_id])
         end
       end
     end

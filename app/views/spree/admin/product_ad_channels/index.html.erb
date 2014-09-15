@@ -1,0 +1,60 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:product_ad_channels) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <li id="new_product_link">
+    <%= button_link_to Spree.t(:new_product_ad_channel), new_object_url, { :remote => true, :icon => 'icon-plus', :id => 'admin_new_product_ad_channel' } %>
+  </li>
+<% end if can?(:create, Spree::ProductAdChannel) %>
+
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:search) %>
+<% end %>
+
+<% content_for :table_filter do %>
+  
+<% end %>
+
+<div id="new_product_wrapper" data-hook></div>
+
+<% if @collection.any? %>
+  <table class="index" id="listing_product_ad_channels">
+    <colgroup>
+       <col style="width: 15%;">
+       <col style="width: 10%;">
+       <col style="width: 48%;">
+       <col style="width: 17%;">
+    </colgroup>
+    <thead>
+      <tr data-hook="admin_products_index_headers">
+        <th><%= Spree.t(:name) %></th>
+        <th><%= Spree.t(:presentation) %></th>
+        <th><%= Spree.t(:min_cpc) %></th>
+        <th><%= Spree.t(:status) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @collection.each do |product_ad_channel| %>
+          <tr id="<%= spree_dom_id product %>" data-hook="admin_products_index_rows" class="<%= cycle('odd', 'even') %>">
+            <td class="align-center"><%= product_ad_channel.name rescue '' %></td>
+            <td class="align-center"><%= product_ad_channel.presentation rescue '' %></td>
+            <td class="align-center"><%= product_ad_channel.min_cpc rescue '' %></td>
+            <td class="align-center"><%= product_ad_channel.status rescue '' %></td>
+            <td class="actions" data-hook="admin_product_ad_channels_index_row_actions">
+              <%= link_to_edit product_ad_channel, :no_text => true, :class => 'edit' if can?(:edit, product_ad_channel) && !product_ad_channel.deleted? %>
+              &nbsp;
+              <%= link_to_delete product_ad_channel, :no_text => true if can?(:delete, product_ad_channel) && !product_ad_channel.deleted? %>
+            </td>
+          </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alpha twelve columns no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/product_ad_channel')) %>,
+    <%= link_to Spree.t(:add_one), spree.new_admin_product_path %>!
+  </div>
+<% end %>
+
+<%= paginate @collection %>

@@ -1,7 +1,7 @@
 Spree::Core::Engine.routes.append do
   namespace :admin do
     resource :google_merchant_settings
-    resources :product_ads_channels do
+    resources :product_ad_channels do
       resources :product_ads
     end
     resources :product_ads
