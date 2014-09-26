@@ -5,7 +5,6 @@ module Spree
     preference :min_session_count, :integer
 
     def set_variant_cpc(variant)
-      verify_settings
       variant = variant.master if variant.respond_to?(:master)
       history = Spree::PageTrafficSnapshot.where(:page => "/products/#{variant.permalink}").order(id: :desc).limit(200)
       session_sum = 0
