@@ -28,6 +28,7 @@ module Spree
 
     def update_ad_cpc(variant)
       variant.product_ads.each do |ad|
+        next if ad.state == "testing"
         ad.max_cpc = variant.max_cpc || ad.channel.default_max_cpc
         ad.state = 'disabled' if ad.max_cpc < ad.channel.min_cpc
         ad.save
