@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('spree', '~> 2.0')
   s.add_dependency('net-sftp', '2.1.2')
-  s.add_dependency('spree_page_analytics', '~> 2.0.12')
+  s.add_dependency('spree_page_analytics', '~> 2.0.12.beta')
 
   s.add_development_dependency 'rspec-rails',  '~> 2.7'
   s.add_development_dependency 'sqlite3'
