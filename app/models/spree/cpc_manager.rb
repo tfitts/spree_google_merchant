@@ -3,13 +3,16 @@ module Spree
     preference :target_spend_percent, :integer
     preference :max_cpc_ceiling, :decimal
     preference :min_session_count, :integer
+    preference :max_session_count, :integer
+    preference :limit_sample_session_count, :boolean
 
     def set_variant_cpc(variant)
       variant = variant.master if variant.respond_to?(:master)
       history = Spree::PageTrafficSnapshot.where(:page => "/products/#{variant.permalink}").order(id: :desc).limit(200)
       session_sum = 0
       index = 0
-      while session_sum < preferred_min_session_count && index < history.length
+      limit_sample_size = preferred_limit_sample_session_count
+      while (limit_sample_size && session_sum < preferred_max_session_count) || (!limit_sample_size && index < history.length)
         session_sum += history[index].sessions
         index += 1
       end
@@ -29,7 +32,11 @@ module Spree
       variant.product_ads.each do |ad|
         next if ad.state == "testing"
         ad.max_cpc = variant.max_cpc || ad.channel.default_max_cpc
-        ad.state = 'disabled' if ad.max_cpc < ad.channel.min_cpc
+        if ad.max_cpc < ad.channel.min_cpc
+          ad.state = 'disabled'
+        elsif ad.state == 'disabled'
+          ad.state = 'auto'
+        end
         ad.save
       end
     end
@@ -40,7 +47,7 @@ module Spree
     end
 
     def is_setup?
-      preferred_target_spend_percent && preferred_max_cpc_ceiling && preferred_min_session_count
+      preferred_target_spend_percent && preferred_max_cpc_ceiling && preferred_min_session_count && !limit_sample_session_count.nil?
     end
   end
 end

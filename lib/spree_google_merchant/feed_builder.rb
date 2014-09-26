@@ -44,7 +44,7 @@ module SpreeGoogleMerchant
     end
 
     def ads
-      Spree::ProductAd.enabled.includes(:variant => [:product => :translations]).joins(:channel).where("spree_product_ad_channels.channel_type = 'google_shopping'")
+      Spree::ProductAd.active.includes([:channel, :variant => [:product => :translations]]).where("spree_product_ad_channels.channel_type = 'google_shopping'")
     end
 
     def generate_store
@@ -79,7 +79,8 @@ module SpreeGoogleMerchant
       File.delete(path) if File.exists?(path)
     end
 
-    def validate_record(product)
+    def validate_record(ad)
+      product = ad.variant.product
       return false if product.images.length == 0 && product.imagesize == 0 rescue true
       return false if product.google_merchant_title.nil?
       return false if product.google_merchant_product_category.nil?
@@ -106,8 +107,8 @@ module SpreeGoogleMerchant
           build_meta(xml)
 
           ads.find_each(:batch_size => 1000) do |ad|
-            next unless ad && ad.variant && ad.variant.product && validate_record(ad.variant.product)
-            build_feed_item(xml, ad.variant.product)
+            next unless ad && ad.variant && ad.variant.product && validate_record(ad)
+            build_feed_item(xml, ad)
           end
         end
       end
@@ -128,7 +129,8 @@ module SpreeGoogleMerchant
       File.delete(path)
     end
 
-    def build_feed_item(xml, product)
+    def build_feed_item(xml, ad)
+      product = ad.variant.product
       xml.item do
         xml.tag!('link', product_url(product.permalink, :host => domain))
         build_images(xml, product)
@@ -137,9 +139,9 @@ module SpreeGoogleMerchant
           value = product.send("google_merchant_#{v}")
           xml.tag!(k, value.to_s) if value.present?
         end
-        build_shipping(xml, product)
-        build_adwords_labels(xml, product)
-        build_custom_labels(xml, product)
+        build_shipping(xml, ad)
+        build_adwords_labels(xml, ad)
+        build_custom_labels(xml, ad)
       end
     end
 
@@ -174,7 +176,8 @@ module SpreeGoogleMerchant
     end
 
     # <g:shipping>
-    def build_shipping(xml, product)
+    def build_shipping(xml, ad)
+      product = ad.variant.product
       if !product.master.fulfillment_cost.nil? && product.master.fulfillment_cost > 0
         xml.tag!('g:shipping') do
           xml.tag!('g:country', "US")
@@ -185,8 +188,8 @@ module SpreeGoogleMerchant
     end
 
     # <g:adwords_labels>
-    def build_adwords_labels(xml, product)
-
+    def build_adwords_labels(xml, ad)
+      product = ad.variant.product
       labels = []
 
       taxon = product.taxons.first
@@ -209,15 +212,19 @@ module SpreeGoogleMerchant
       end
     end
 
-    def build_custom_labels(xml, product)
+    def build_custom_labels(xml, ad)
+      product = ad.variant.product
+
       # Set availability
       xml.tag!('g:custom_label_0', product.google_merchant_availability)
 
       # Set CPC
-      channel = Spree::ProductAdChannel.find_by_channel_type('google_shopping')
+      channel = ad.channel
       max_cpc = nil
-      if product.master && product.master.max_cpc
-        max_cpc = product.master.max_cpc / 0.65
+      if ad.max_cpc
+        max_cpc = ad.max_cpc
+      elsif ad.variant && ad.variant.max_cpc
+        max_cpc = ad.variant.max_cpc / 0.65
       elsif channel && channel.default_max_cpc
         max_cpc = channel.default_max_cpc
       end
