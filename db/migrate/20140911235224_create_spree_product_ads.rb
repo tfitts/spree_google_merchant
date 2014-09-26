@@ -1,6 +1,6 @@
 class CreateSpreeProductAds < ActiveRecord::Migration
   def change
-    create_table :spree_products_ads do |t|
+    create_table :spree_product_ads do |t|
       t.integer :variant_id
       t.integer :product_ad_channel_id
       t.string  :state, default: 'disabled'

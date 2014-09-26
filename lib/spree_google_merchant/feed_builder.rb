@@ -43,12 +43,8 @@ module SpreeGoogleMerchant
       @domain ||= Spree::GoogleMerchant::Config[:public_domain]
     end
 
-    def ar_scope
-      if @store
-        Spree::Product.by_store(@store).google_merchant_scope.scoped
-      else
-        Spree::Product.google_merchant_scope.scoped
-      end
+    def ads
+      Spree::ProductAd.enabled.includes(:variant => [:product => :translations]).joins(:channel).where("spree_product_ad_channels.channel_type = 'google_shopping'")
     end
 
     def generate_store
@@ -89,11 +85,9 @@ module SpreeGoogleMerchant
       return false if product.google_merchant_product_category.nil?
       return false if product.google_merchant_availability.nil?
       return false if product.google_merchant_price.nil?
-      #return false if product.google_merchant_description.nil?
       return false if product.google_merchant_brand.nil?
       return false if product.google_merchant_gtin.nil?
       return false if product.google_merchant_mpn.nil?
-      #return false if product.google_merchant_shipping_weight.nil?
       return false unless validate_upc(product.upc)
 
       unless product.google_merchant_sale_price.nil?
@@ -111,9 +105,9 @@ module SpreeGoogleMerchant
         xml.channel do
           build_meta(xml)
 
-          ar_scope.find_each(:batch_size => 300) do |product|
-            next unless validate_record(product)
-            build_product(xml, product)
+          ads.find_each(:batch_size => 1000) do |ad|
+            next unless ad && ad.variant && ad.variant.product && validate_record(ad.variant.product)
+            build_feed_item(xml, ad.variant.product)
           end
         end
       end
@@ -134,7 +128,7 @@ module SpreeGoogleMerchant
       File.delete(path)
     end
 
-    def build_product(xml, product)
+    def build_feed_item(xml, product)
       xml.item do
         xml.tag!('link', product_url(product.permalink, :host => domain))
         build_images(xml, product)
@@ -210,15 +204,24 @@ module SpreeGoogleMerchant
         end
       end
 
-
-
       labels.slice(0..9).each do |l|
         xml.tag!('g:adwords_labels', l)
       end
     end
 
     def build_custom_labels(xml, product)
+      # Set availability
       xml.tag!('g:custom_label_0', product.google_merchant_availability)
+
+      # Set CPC
+      channel = Spree::ProductAdChannel.find_by_channel_type('google_shopping')
+      max_cpc = nil
+      if product.master && product.master.max_cpc
+        max_cpc = product.master.max_cpc / 0.65
+      elsif channel && channel.default_max_cpc
+        max_cpc = channel.default_max_cpc
+      end
+      xml.tag!('g:custom_label_1', '%.2f' % max_cpc) if max_cpc
     end
 
     def build_meta(xml)

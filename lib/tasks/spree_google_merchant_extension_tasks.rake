@@ -1,6 +1,12 @@
 require 'net/ftp'
 
 namespace :spree_google_merchant do
+
+  task :update_cpc_values => [:environment] do |t, args|
+    cpc_manager = Spree::CpcManager.new
+    Spree::Variant.all.each{|v|cpc_manager.set_variant_cpc_and_update_ads(v)} if cpc_manager.is_setup?
+  end
+
   task :generate_and_transfer => [:environment] do |t, args|
     SpreeGoogleMerchant::FeedBuilder.generate_and_transfer
   end

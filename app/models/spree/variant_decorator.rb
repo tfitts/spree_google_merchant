@@ -8,7 +8,7 @@ Spree::Variant.class_eval do
         product_ads.create(
           :channel => channel, 
           :state => "enabled", 
-          :max_cpc => (self.max_cpc || channel.min_cpc)
+          :max_cpc => (self.max_cpc || channel.default_max_cpc)
         )
       end
     end
