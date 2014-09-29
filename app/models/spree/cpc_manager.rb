@@ -12,7 +12,7 @@ module Spree
       session_sum = 0
       index = 0
       limit_sample_size = preferred_limit_sample_session_count
-      while (limit_sample_size && session_sum < preferred_max_session_count) || (!limit_sample_size && index < history.length)
+      while ((limit_sample_size && session_sum < preferred_max_session_count) || !limit_sample_size) && index < history.length
         session_sum += history[index].sessions
         index += 1
       end
