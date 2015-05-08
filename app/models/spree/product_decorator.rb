@@ -89,7 +89,17 @@ module Spree
     def google_merchant_gender
       value = self.first_property(:gender)
       return unless value.present?
-      value.gsub('Girls','Female').gsub('Womens','Female').gsub('Boys','Male').gsub('Mens','Male')
+      determine_gender(value)
+    end
+
+    def determine_gender(string)
+      if ['girl','women','woman','female'].select{|v|string.downcase.include? v}.any?
+        'female'
+      elsif ['boy','men','man','male'].select{|v|string.downcase.include? v}.any?
+        'male'
+      else
+        'unisex'
+      end
     end
 
     # <g:age_group> Adult, Kids
