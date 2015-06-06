@@ -95,6 +95,7 @@ module SpreeGoogleMerchant
       return false if product.ebay_current_price.nil? || product.ebay_current_price.to_f <= 0
       return false if product.ebay_product_url.nil?
       return false if product.ebay_unique_merchant_sku.nil?
+      return false if product.respond_to?(:discontinued?) && product.discontinued? && self.master.stock_items.sum(:count_on_hand) <= 0
       return false unless validate_upc(product.upc)
       true
     end

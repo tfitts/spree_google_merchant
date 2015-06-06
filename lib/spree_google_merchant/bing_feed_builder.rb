@@ -95,6 +95,7 @@ module SpreeGoogleMerchant
       return false if product.bing_producturl.nil?
       return false if product.bing_brand.nil?
       return false if product.bing_imageurl.nil?
+      return false if product.respond_to?(:discontinued?) && product.discontinued? && self.master.stock_items.sum(:count_on_hand) <= 0
       return false unless validate_upc(product.upc)
       true
     end
