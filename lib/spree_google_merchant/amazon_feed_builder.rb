@@ -100,6 +100,7 @@ module SpreeGoogleMerchant
       return false if product.amazon_price.nil? || product.amazon_price.to_f <= 0
       return false if product.amazon_link.nil?
       return false if product.amazon_sku.nil?
+      return false if product.respond_to?(:discontinued?) && product.discontinued? && self.master.stock_items.sum(:count_on_hand) <= 0
       return false unless validate_upc(product.upc)
       true
     end
