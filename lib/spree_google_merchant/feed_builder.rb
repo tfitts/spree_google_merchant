@@ -183,7 +183,7 @@ module SpreeGoogleMerchant
         xml.tag!('g:shipping') do
           xml.tag!('g:country', "US")
           xml.tag!('g:service', "Ground")
-          xml.tag!('g:price', product.master.fulfillment_cost.to_f)
+          xml.tag!('g:price', product.google_merchant_shipping_cost.to_f)
         end
       end
     end
