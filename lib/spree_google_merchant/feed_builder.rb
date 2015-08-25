@@ -44,7 +44,7 @@ module SpreeGoogleMerchant
     end
 
     def ads
-      Spree::ProductAd.active.includes([:channel, :variant => [:product => :translations]]).where("spree_product_ad_channels.channel_type = 'google_shopping'")
+      Spree::ProductAd.active.includes([:channel, :variant => [:product => :translations]]).where("spree_product_ad_channels.channel_type = 'google_shopping'").references(:channel)
     end
 
     def generate_store
