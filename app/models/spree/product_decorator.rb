@@ -77,7 +77,7 @@ module Spree
 
     # <g:gtin> 8-, 12-, or 13-digit number (UPC, EAN, JAN, or ISBN)
     def google_merchant_gtin
-      self.master.gtin rescue self.upc
+      self.master.gtin rescue self.master.upc
     end
 
     # <g:mpn> Alphanumeric characters
@@ -190,7 +190,7 @@ module Spree
     end
 
     def amazon_upc
-      self.upc
+      self.master.upc
     end
 
     def amazon_brand
@@ -322,7 +322,7 @@ module Spree
     end
 
     def ebay_upc
-      self.upc
+      self.master.upc
     end
 
     def ebay_shipping_rate
@@ -330,7 +330,7 @@ module Spree
     end
 
     def ebay_original_price
-      self.msrp
+      self.master.msrp
     end
 
     def ebay_brand
@@ -399,7 +399,7 @@ module Spree
     end
 
     def bing_upc
-      self.upc
+      self.master.upc
     end
 
     def bing_sku
