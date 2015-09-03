@@ -81,7 +81,7 @@ module SpreeGoogleMerchant
 
     def validate_record(ad)
       product = ad.variant.product
-      return false if product.images.length == 0 && product.imagesize == 0 rescue true
+      return false if product.images.length == 0 && product.image_size == 0 rescue true
       return false if product.google_merchant_title.nil?
       return false if product.google_merchant_product_category.nil?
       return false if product.google_merchant_availability.nil?

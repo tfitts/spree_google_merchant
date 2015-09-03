@@ -1,8 +1,8 @@
 module Spree
   Product.class_eval do
     scope :google_merchant_scope, -> {includes(:taxons, {:master => :images}).includes(:product_properties)}
-    scope :amazon_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("imagesize >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
-    scope :ebay_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("spree_stock_items.count_on_hand <> 0").where("imagesize >= 300").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
+    scope :amazon_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("spree_variants.image_size >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
+    scope :ebay_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("spree_stock_items.count_on_hand <> 0").where("spree_variants.image_size >= 300").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
 
     def first_property(property_name)
       value = self.property(property_name)

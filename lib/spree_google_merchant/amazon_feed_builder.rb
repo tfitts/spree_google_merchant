@@ -93,7 +93,7 @@ module SpreeGoogleMerchant
     end
 
     def validate_record(product)
-      return false if product.images.length == 0 && product.imagesize == 0 rescue true
+      return false if product.images.length == 0 && product.image_size == 0 rescue true
       return false if product.master.stock_items.sum(:count_on_hand) <= 0
       return false if product.amazon_title.nil?
       return false if product.amazon_category.nil?
