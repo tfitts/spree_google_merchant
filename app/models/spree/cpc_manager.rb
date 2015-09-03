@@ -10,7 +10,7 @@ module Spree
 
     def set_variant_cpc(variant)
       variant = variant.master if variant.respond_to?(:master)
-      history = Spree::PageTrafficSnapshot.where(:page => "/products/#{variant.permalink}").order("id DESC").limit(preferred_sample_days_limit)
+      history = Spree::PageTrafficSnapshot.where(:page => "/products/#{variant.product.slug}").order("id DESC").limit(preferred_sample_days_limit)
       session_sum = 0
       index = 0
       limit_sample_size = preferred_limit_sample_session_count
