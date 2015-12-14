@@ -1,6 +1,5 @@
 module Spree
   Product.class_eval do
-    scope :google_merchant_scope, -> {includes(:taxons, {:master => :images}).includes(:product_properties)}
     scope :amazon_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("not (spree_properties.name = 'brand' and spree_product_properties.value = 'Loftus') and spree_stock_items.count_on_hand <> 0").where("spree_variants.image_size >= 500").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
     scope :ebay_ads, -> {joins([{:product_properties => :property}, {:master => :stock_items}]).where("spree_stock_items.count_on_hand <> 0").where("spree_variants.image_size >= 300").includes(:taxons, {:master => [:images, :stock_items]}).includes(:product_properties).group(:id)}
 
@@ -37,11 +36,13 @@ module Spree
 
     # <g:availability> in stock | available for order | out of stock | preorder
     def google_merchant_availability
-      self.master.stock_items.sum(:count_on_hand) > 0 ? 'in stock' : 'out of stock'
+      google_merchant_quantity > 0 ? 'in stock' : 'out of stock'
     end
 
     def google_merchant_quantity
-      self.master.stock_items.sum(:count_on_hand)
+      @quantity_available ||= begin
+        master.stock_items.reduce(0){|sum, item|sum + item.count_on_hand}
+      end
     end
 
     def google_merchant_image_link
@@ -77,7 +78,7 @@ module Spree
 
     # <g:gtin> 8-, 12-, or 13-digit number (UPC, EAN, JAN, or ISBN)
     def google_merchant_gtin
-      self.master.gtin rescue self.master.upc
+      self.master.try(:gtin) || self.master.try(:upc)
     end
 
     # <g:mpn> Alphanumeric characters

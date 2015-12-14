@@ -44,7 +44,7 @@ module SpreeGoogleMerchant
     end
 
     def ads
-      Spree::ProductAd.active.includes([:channel, :variant => [:product => :translations]]).where("spree_product_ad_channels.channel_type = 'google_shopping'").references(:channel)
+      Spree::ProductAd.active.in_feed.google_shopping
     end
 
     def generate_store
@@ -81,21 +81,12 @@ module SpreeGoogleMerchant
 
     def validate_record(ad)
       product = ad.variant.product
-      return false if product.images.length == 0 && product.image_size == 0 rescue true
-      return false if product.google_merchant_title.nil?
-      return false if product.google_merchant_product_category.nil?
-      return false if product.google_merchant_availability.nil?
-      return false if product.google_merchant_price.nil?
       return false if product.google_merchant_brand.nil?
-      return false if product.google_merchant_gtin.nil?
-      return false if product.google_merchant_mpn.nil?
-      return false if product.respond_to?(:discontinued?) && product.discontinued? && product.master.stock_items.sum(:count_on_hand) <= 0
+      return false if product.respond_to?(:discontinued?) && product.discontinued? && product.google_merchant_quantity <= 0
       return false unless validate_upc(ad.variant.upc)
-
       unless product.google_merchant_sale_price.nil?
         return false if product.google_merchant_sale_price_effective.nil?
       end
-
       true
     end    
     
@@ -107,7 +98,7 @@ module SpreeGoogleMerchant
         xml.channel do
           build_meta(xml)
 
-          ads.find_each(:batch_size => 1000) do |ad|
+          ads.find_each(:batch_size => 500) do |ad|
             next unless ad && ad.variant && ad.variant.product && validate_record(ad)
             build_feed_item(xml, ad)
           end
@@ -179,11 +170,12 @@ module SpreeGoogleMerchant
     # <g:shipping>
     def build_shipping(xml, ad)
       product = ad.variant.product
-      if !product.master.fulfillment_cost.nil? && product.master.fulfillment_cost > 0
+      shipping_cost = product.google_merchant_shipping_cost
+      if shipping_cost && shipping_cost > 0
         xml.tag!('g:shipping') do
           xml.tag!('g:country', "US")
           xml.tag!('g:service', "Ground")
-          xml.tag!('g:price', product.google_merchant_shipping_cost.to_f)
+          xml.tag!('g:price', shipping_cost.to_f)
         end
       end
     end
