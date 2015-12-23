@@ -9,7 +9,7 @@ module Spree
     def self.in_feed
       includes({:variant => {:product => [:taxons, {:master => [:images, :stock_items, :default_price]}, :properties, :product_properties]}}, :channel)
       .references(:spree_products, :spree_prices, :spree_variants)
-      .where("spree_products.imagesize > 0")
+      .where("spree_variants.image_size > 0")
       .where("spree_products.name IS NOT NULL")
       .where("spree_prices.amount >= 0")
       .where("spree_prices.currency IS NOT NULL")
