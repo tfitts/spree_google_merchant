@@ -13,7 +13,6 @@ module Spree
       .where("spree_products.name IS NOT NULL")
       .where("spree_prices.amount >= 0")
       .where("spree_prices.currency IS NOT NULL")
-      .where("spree_variants.upc IS NOT NULL")
       .where("spree_variants.sku IS NOT NULL")
     end
   end
